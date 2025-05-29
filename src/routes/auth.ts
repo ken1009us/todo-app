@@ -13,32 +13,38 @@ function isValidEmail(email: string): boolean {
 }
 
 router.post('/register', async (req: Request, res: Response) => {
-  const { email, password } = req.body;
+    try {
+      const { email, password } = req.body;
 
-  if (!email || !password)
-    return res.status(400).json({ error: 'Email and password required' });
+      if (!email || !password)
+        return res.status(400).json({ error: 'Email and password required' });
 
-  if (!isValidEmail(email))
-    return res.status(400).json({ error: 'Invalid email format' });
+      if (!isValidEmail(email))
+        return res.status(400).json({ error: 'Invalid email format' });
 
-  if (password.length < 8)
-    return res.status(400).json({ error: 'Password must be at least 8 characters' });
+      if (password.length < 8)
+        return res.status(400).json({ error: 'Password must be at least 8 characters' });
 
-  const existingUser = await prisma.user.findUnique({ where: { email } });
-  if (existingUser)
-    return res.status(400).json({ error: 'User already exists' });
+      const existingUser = await prisma.user.findUnique({ where: { email } });
+      if (existingUser)
+        return res.status(400).json({ error: 'User already exists' });
 
-  const hashedPassword = await bcrypt.hash(password, 10);
-  const user = await prisma.user.create({
-    data: {
-      email,
-      password: hashedPassword,
-    },
+      const hashedPassword = await bcrypt.hash(password, 10);
+      const user = await prisma.user.create({
+        data: {
+          email,
+          password: hashedPassword,
+        },
+      });
+
+      const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '7d' });
+      res.json({ token });
+    } catch (error: any) {
+      console.error('Register error:', error);
+      res.status(500).json({ error: 'Server error during registration' });
+    }
   });
 
-  const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '7d' });
-  res.json({ token });
-});
 
 router.post('/login', async (req: Request, res: Response) => {
   const { email, password } = req.body;

@@ -67,6 +67,11 @@ app.get('/{*any}', (_, res) => {
   res.sendFile(path.join(frontendPath, 'index.html'));
 });
 
+app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+  console.error('Global error handler:', err);
+  res.status(err.status || 500).json({ error: err.message || 'Internal Server Error' });
+});
+
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
