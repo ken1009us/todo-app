@@ -60,8 +60,6 @@ app.delete('/api/todos/:id', authenticateToken, async (req: AuthRequest, res) =>
   res.status(204).end();
 });
 
-const __dirname = path.resolve()
-
 app.use(express.static(path.join(__dirname, '../public')));
 
 app.get('*', (_, res) => {
