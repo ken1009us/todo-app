@@ -5,3 +5,7 @@ npm-debug.log
 Dockerfile
 docker-compose.yml
 .env
+todo-frontend/node_modules
+todo-frontend/dist
+todo-frontend/Dockerfile.frontend
+todo-frontend/.env
