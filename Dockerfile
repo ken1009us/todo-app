@@ -3,9 +3,11 @@ FROM node:20-alpine as frontend
 
 WORKDIR /app/frontend
 COPY todo-frontend/package*.json ./
+COPY todo-frontend/.env ./
 RUN npm install
 COPY todo-frontend .
 RUN npm run build
+
 
 # Stage 2: Build backend
 FROM node:20-alpine as backend
