@@ -62,7 +62,7 @@ app.delete('/api/todos/:id', authenticateToken, async (req: AuthRequest, res) =>
 
 const frontendPath = path.join(__dirname, '../todo-frontend/dist');
 app.use(express.static(frontendPath));
-app.get('*', (_, res) => {
+app.get('/{*any}', (_, res) => {
   res.sendFile(path.join(frontendPath, 'index.html'));
 });
 
