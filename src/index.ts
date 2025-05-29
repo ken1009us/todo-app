@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import prisma from './db/client';
 import authRoutes from './routes/auth';
+import path from 'path';
 import { authenticateToken, AuthRequest } from './middleware/auth';
 
 const app = express();
@@ -59,10 +60,8 @@ app.delete('/api/todos/:id', authenticateToken, async (req: AuthRequest, res) =>
   res.status(204).end();
 });
 
-import path from 'path';
-import { fileURLToPath } from 'url';
+const __dirname = path.resolve()
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
 app.use(express.static(path.join(__dirname, '../public')));
 
 app.get('*', (_, res) => {
