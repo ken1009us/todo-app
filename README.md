@@ -1,68 +1,76 @@
 # TODO TERMINAL App
 
-A full-stack terminal-style Todo List app built with:
+A full-stack terminal-style Todo List app with multi-user support 🔐
+Built using:
 
 - **Frontend**: Vite + React + Tailwind CSS
 - **Backend**: Node.js + Express + Prisma
+- **Auth**: JWT-based login system
 - **Database**: PostgreSQL
-- **Deployment**: Docker-ready, Vercel or Fly.io friendly
+- **Deployment**: Docker-ready
 
-## Features
+---
 
-- Create / View / Toggle / Delete todos
-- Optional due date with validation
-- Cool "terminal theme" UI
-- Fully RESTful backend API
-- Input validation and instant UI update
+## 🔑 Features
 
-## API Endpoints
+- 📝 Create / View / Toggle / Delete todos
+- 📅 Optional due date with date validation
+- 👤 User registration & login (JWT auth)
+- 🖥 Terminal-style UI (dark, green text)
+- 🔒 Per-user data isolation (todos by userId)
+- ⚡ Instant UI updates and validation feedback
 
+
+## 🔐 Authentication API
+
+```
+| Method | Endpoint            | Description          |
+|--------|---------------------|----------------------|
+| POST   | `/api/auth/register`| Register a new user  |
+| POST   | `/api/auth/login`   | Login and get token  |
+
+> Token (JWT) is stored in `localStorage` and sent with `Authorization: Bearer <token>` in all requests.
+```
+
+## ✅ Todo API Endpoints (Protected)
+
+```shell
 | Method | Endpoint         | Description               |
 |--------|------------------|---------------------------|
-| GET    | `/api/todos`     | Get all todos             |
+| GET    | `/api/todos`     | Get all todos for user    |
 | POST   | `/api/todos`     | Add a new todo            |
 | PUT    | `/api/todos/:id` | Toggle isDone status      |
 | DELETE | `/api/todos/:id` | Delete a todo             |
-
-## Database Design
-
-![DB Schema](db_schema.png)
-
-**Table: Todo**
-- `id`: UUID, primary key
-- `title`: task content (required)
-- `isDone`: completion status
-- `createdAt`: timestamp
-- `dueDate`: optional deadline
+```
 
 ## Workflow Architecture
 
 ```shell
 +-----------------------------+
-|     User Interface          |
-|  React + Tailwind (Vite)    |
+|     React Frontend         |
+|  Vite + Tailwind + JWT     |
 +-------------+---------------+
               |
-              | fetch() calls (GET, POST, PUT, DELETE)
+              | fetch() w/ Authorization: Bearer token
               v
 +-------------+---------------+
-|         Express API         |
-|  REST Endpoints (/api/todos)|
+|     Express API Server      |
+| /api/auth/* and /api/todos/*|
 +-------------+---------------+
               |
               | Prisma ORM
               v
 +-------------+---------------+
-|       PostgreSQL Database   |
-|Table: Todo (id, title, etc.)|
+|    PostgreSQL (Docker)      |
+|  Tables: User, Todo         |
 +-----------------------------+
 ```
 
-## 🚀 Run Locally
+## Local Development
 
 ### Backend
 
-```bash
+```shell
 cd todo-app
 npm install
 npx prisma migrate dev
@@ -71,9 +79,8 @@ npm run dev
 
 ### Frontend
 
-```bash
+```shell
 cd todo-app/todo-frontend
 npm install
 npm run dev
 ```
-
