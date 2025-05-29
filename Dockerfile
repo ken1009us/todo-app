@@ -12,20 +12,17 @@ FROM node:20-alpine as backend
 
 WORKDIR /app
 
-# Copy backend files
-COPY package*.json tsconfig.json ./
-COPY src ./src
-
-# Install dependencies
+COPY package*.json ./
 RUN npm install
 
-# Build TypeScript
+COPY . .
+
 RUN npm run build
 
-# Copy frontend static files into public
+RUN npx prisma generate
+
 RUN mkdir -p ./public
 COPY --from=frontend /app/frontend/dist ./public
 
 EXPOSE 3000
-
 CMD ["npm", "run", "start"]
