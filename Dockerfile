@@ -22,6 +22,8 @@ RUN npm install
 
 RUN npx prisma generate
 
+RUN npx prisma migrate deploy
+
 RUN npm run build
 
 RUN ls -al dist/db
@@ -30,4 +32,5 @@ RUN mkdir -p ./public
 COPY --from=frontend /app/frontend/dist ./public
 
 EXPOSE 3000
+
 CMD ["npm", "run", "start"]
