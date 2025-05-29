@@ -15,14 +15,36 @@ function TodoPage() {
   const dueDateRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      navigate('/login');
+    }
+  }, []);
+
   const fetchTodos = async () => {
     const token = localStorage.getItem('token');
+
     const res = await fetch('http://localhost:3000/api/todos', {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
+
+    if (!res.ok) {
+      console.error('Failed to fetch todos');
+      setTodos([]);
+      return;
+    }
+
     const data = await res.json();
+
+    if (!Array.isArray(data)) {
+      console.error('Invalid data format:', data);
+      setTodos([]);
+      return;
+    }
+
     setTodos(data);
   };
 
