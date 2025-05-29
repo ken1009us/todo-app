@@ -17,9 +17,9 @@ RUN npm install
 
 COPY . .
 
-RUN npm run build
-
 RUN npx prisma generate
+
+RUN npm run build
 
 RUN mkdir -p ./public
 COPY --from=frontend /app/frontend/dist ./public

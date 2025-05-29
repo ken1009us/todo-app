@@ -1,40 +1,29 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { register } from '../api/auth';
 
 function RegisterPage() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const [successMessage, setSuccessMessage] = useState('');
-  const navigate = useNavigate();
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [error, setError] = useState('');
+    const [successMessage, setSuccessMessage] = useState('');
+    const navigate = useNavigate();
 
-  const handleRegister = async () => {
-    try {
-      const res = await fetch('http://localhost:3000/api/auth/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      });
+    const handleRegister = async () => {
+      try {
+        await register(email, password);
 
-      if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.error || 'Registration failed');
+        setSuccessMessage('🎉 Registration successful! Redirecting...');
+        setError('');
+
+        setTimeout(() => {
+          navigate('/');
+        }, 1500);
+      } catch (err: any) {
+        setError(err.message);
+        setSuccessMessage('');
       }
-
-      const { token } = await res.json();
-      localStorage.setItem('token', token);
-      setSuccessMessage('🎉 Registration successful! Redirecting...');
-      setError('');
-
-      // 1.5 秒後跳轉到 TodoPage
-      setTimeout(() => {
-        navigate('/');
-      }, 1500);
-    } catch (err: any) {
-      setError(err.message);
-      setSuccessMessage('');
-    }
-  };
+    };
 
   return (
     <div className="min-h-screen bg-gray-900 text-green-300 font-mono flex items-center justify-center">

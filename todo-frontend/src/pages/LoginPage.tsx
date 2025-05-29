@@ -1,31 +1,23 @@
 import { useState } from 'react';
+import { login } from '../api/auth';
 
 function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const login = async () => {
+  const handleLogin = async () => {
     if (!email || !password) {
       alert('Please enter email and password');
       return;
     }
 
-    const res = await fetch('http://localhost:3000/api/auth/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password }),
-    });
-
-    if (!res.ok) {
-      const err = await res.json();
-      alert(err.error || 'Login failed');
-      return;
+    try {
+      await login(email, password);
+      alert('Login successful');
+      window.location.href = '/';
+    } catch (err: any) {
+      alert(err.message);
     }
-
-    const data = await res.json();
-    localStorage.setItem('token', data.token);
-    alert('Login successful');
-    window.location.href = '/';
   };
 
   return (
@@ -47,7 +39,7 @@ function LoginPage() {
           onChange={(e) => setPassword(e.target.value)}
         />
         <button
-          onClick={login}
+          onClick={handleLogin} //
           className="bg-green-600 hover:bg-green-500 text-black font-bold px-4 py-2 rounded"
         >
           Login

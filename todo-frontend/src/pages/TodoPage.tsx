@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { fetchTodos as fetchTodosApi, addTodo as addTodoApi, updateTodo, deleteTodo } from '../api/todo';
 
 export type Todo = {
   id: string;
@@ -23,29 +24,13 @@ function TodoPage() {
   }, []);
 
   const fetchTodos = async () => {
-    const token = localStorage.getItem('token');
-
-    const res = await fetch('http://localhost:3000/api/todos', {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    if (!res.ok) {
-      console.error('Failed to fetch todos');
+    try {
+      const todos = await fetchTodosApi();
+      setTodos(todos);
+    } catch (err) {
+      console.error('Failed to fetch todos:', err);
       setTodos([]);
-      return;
     }
-
-    const data = await res.json();
-
-    if (!Array.isArray(data)) {
-      console.error('Invalid data format:', data);
-      setTodos([]);
-      return;
-    }
-
-    setTodos(data);
   };
 
   useEffect(() => {
@@ -102,44 +87,32 @@ function TodoPage() {
       }
     }
 
-    const token = localStorage.getItem('token');
-    const res = await fetch('http://localhost:3000/api/todos', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({ title, dueDate: dueDateRef.current?.value }),
-    });
-
-    const newTodo = await res.json();
-    setTitle('');
-    setTodos((prev) => [newTodo, ...prev]);
-    if (dueDateRef.current) dueDateRef.current.value = '';
+    try {
+      const newTodo = await addTodoApi(title, dueDate);
+      setTitle('');
+      setTodos((prev) => [newTodo, ...prev]);
+      if (dueDateRef.current) dueDateRef.current.value = '';
+    } catch (err) {
+      alert('⚠️ Failed to add todo');
+    }
   };
 
   const toggleDone = async (id: string, isDone: boolean) => {
-    const token = localStorage.getItem('token');
-    await fetch(`http://localhost:3000/api/todos/${id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({ isDone: !isDone }),
-    });
-    fetchTodos();
+    try {
+      await updateTodo(id, !isDone);
+      fetchTodos();
+    } catch (err) {
+      alert('⚠️ Failed to update todo');
+    }
   };
 
-  const deleteTodo = async (id: string) => {
-    const token = localStorage.getItem('token');
-    await fetch(`http://localhost:3000/api/todos/${id}`, {
-      method: 'DELETE',
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    fetchTodos();
+  const deleteTodoHandler = async (id: string) => {
+    try {
+      await deleteTodo(id);
+      fetchTodos();
+    } catch (err) {
+      alert('⚠️ Failed to delete todo');
+    }
   };
 
   return (
@@ -202,7 +175,7 @@ function TodoPage() {
             </div>
             <button
               className="text-red-500 hover:text-red-700 text-sm"
-              onClick={() => deleteTodo(todo.id)}
+              onClick={() => deleteTodoHandler(todo.id)}
             >
               DEL
             </button>
