@@ -1,11 +1,6 @@
 node_modules
-npm-debug.log
-.git
-.gitignore
-Dockerfile
-docker-compose.yml
+dist
+*.log
 .env
 todo-frontend/node_modules
 todo-frontend/dist
-todo-frontend/Dockerfile.frontend
-todo-frontend/.env

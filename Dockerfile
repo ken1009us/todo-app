@@ -11,14 +11,21 @@ RUN npm run build
 FROM node:20-alpine as backend
 
 WORKDIR /app
-COPY package*.json ./
+
+# Copy backend files
+COPY package*.json tsconfig.json ./
+COPY src ./src
+
+# Install dependencies
 RUN npm install
 
-COPY . .
+# Build TypeScript
+RUN npm run build
 
-# Copy frontend build to backend public
+# Copy frontend static files into public
 RUN mkdir -p ./public
 COPY --from=frontend /app/frontend/dist ./public
 
 EXPOSE 3000
+
 CMD ["npm", "run", "start"]
