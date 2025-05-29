@@ -45,19 +45,18 @@ router.post('/register', async (req: Request, res: Response) => {
     }
   });
 
-
 router.post('/login', async (req: Request, res: Response) => {
   const { email, password } = req.body;
   if (!email || !password)
-    return res.status(400).json({ error: 'Email and password required' });
+    return res.status(400).json({ error: 'Email and password are required' });
 
   const user = await prisma.user.findUnique({ where: { email } });
   if (!user)
-    return res.status(400).json({ error: 'Invalid credentials' });
+    return res.status(400).json({ error: 'Email not registered' });
 
   const valid = await bcrypt.compare(password, user.password);
   if (!valid)
-    return res.status(400).json({ error: 'Invalid credentials' });
+    return res.status(400).json({ error: 'Incorrect password' });
 
   const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '7d' });
   res.json({ token });
