@@ -1,6 +1,12 @@
 # TODO TERMINAL App
 
-A full-stack terminal-style Todo List app with multi-user support 🔐
+![image](https://github.com/ken1009us/todo-app/blob/main/img/todo.png "todo")
+
+
+👉 [Todo app Homepage](https://www.todoterminal.site/)
+
+
+A full-stack terminal-style Todo List app with multi-user support
 Built using:
 
 - **Frontend**: Vite + React + Tailwind CSS
@@ -11,17 +17,17 @@ Built using:
 
 ---
 
-## 🔑 Features
+## Features
 
-- 📝 Create / View / Toggle / Delete todos
-- 📅 Optional due date with date validation
-- 👤 User registration & login (JWT auth)
-- 🖥 Terminal-style UI (dark, green text)
-- 🔒 Per-user data isolation (todos by userId)
-- ⚡ Instant UI updates and validation feedback
+- Create / View / Toggle / Delete todos
+- Optional due date with date validation
+- User registration & login (JWT auth)
+- Terminal-style UI (dark, green text)
+- Per-user data isolation (todos by userId)
+- Instant UI updates and validation feedback
 
 
-## 🔐 Authentication API
+## Authentication API
 
 ```
 | Method | Endpoint            | Description          |
@@ -32,7 +38,7 @@ Built using:
 > Token (JWT) is stored in `localStorage` and sent with `Authorization: Bearer <token>` in all requests.
 ```
 
-## ✅ Todo API Endpoints (Protected)
+## Todo API Endpoints (Protected)
 
 ```shell
 | Method | Endpoint         | Description               |
